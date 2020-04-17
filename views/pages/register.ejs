@@ -1,0 +1,48 @@
+<div class="container">
+        <div class="row">
+           <div class="col-md-6 col-md-offset-3">
+              <div class="panel panel-login">
+                 <div class="panel-heading">
+                    <div class="panel-title text-center">New Account</div>
+
+                    <hr>
+                    <div style="margin-top: 20px;"></div>
+                    <span class="login-avatar">
+                        <img src="img/logo.jpg" alt="AVATAR">
+                    </span>
+                 </div>
+                 <div class="panel-body">
+                    <div class="row">
+                       <div class="col-lg-12">   
+                          <form id="login-form"  action="createuser" method="post" role="form" style="display: block;">
+                             <div class="form-group input-group">
+                                <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                <input type="text" name="username" id="username" tabindex="1"  class="form-control" required placeholder=" "> 
+                                <label class="form-control-placeholder" for="username">Username</label>
+                             </div>
+                             <div class="form-group input-group">
+                                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                                 <input type="text" name="display" id="display" tabindex="2"  class="form-control" required placeholder=" "> 
+                                 <label class="form-control-placeholder" for="display">Display Name</label>
+                              </div>
+                             <div class="form-group input-group">
+                                <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                <input type="password" name="password" id="password" tabindex="3" class="form-control" required placeholder=" ">
+                                 <label class="form-control-placeholder" for="password">Password</label>
+                             </div>
+                             <div class="form-group input-group">
+                                 <span class="input-group-addon"><i class="fa fa-lock"></i></span>
+                                 <input type="password" name="confirm" id="confirm" tabindex="4" class="form-control" required placeholder=" ">
+                                 <label class="form-control-placeholder" for="confirm">Confirm Password</label>
+                              </div>
+                             <div>
+                                <button name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="LOGIN"><i class="fa fa-sign-in"></i> Create</button>
+                             </div>
+                           </form>
+                       </div>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+     </div>
