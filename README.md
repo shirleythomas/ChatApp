@@ -19,6 +19,9 @@ The server is currently written to listen on port 3000.
 The app should be available in:
 http://localhost:3000/
 
+# Password Hashing
+https://www.npmjs.com/package/password-hash
+
 
 # Credits
 Started with the tutorial:
