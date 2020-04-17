@@ -1,6 +1,22 @@
 # ChatApp
-Simple Chat App using Node.js
+Chat App using Node.js and MongoDB.
 
+To get the app running:
+$ npm install --save express
+$ npm install --save ejs
+$ npm install --save nodemon
+$ npm install --save socket.io
+
+Launch app by running:
+$ npm run start
+
+The server is currently written to listen on port 3000.
+
+The app should be available in:
+http://localhost:3000/
+
+
+# Credits
 Started with the tutorial:
 https://medium.com/@noufel.gouirhate/build-a-simple-chat-app-with-node-js-and-socket-io-ea716c093088
 
