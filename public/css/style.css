@@ -131,7 +131,7 @@ body {
   margin-top: 23px;
   font-size: 0.8em;
   cursor: pointer;
-  color: #435f7a;
+  /*color: #435f7a;*/
 }
 @media screen and (max-width: 735px) {
   #frame #sidepanel #profile .wrap i.expand-button {
@@ -573,15 +573,15 @@ body {
 #frame .content .messages ul li.sent img {
   margin: 6px 8px 0 0;
 }
-#frame .content .messages ul li.sent p {
+#frame .content .messages ul li.sent div{
   background: #435f7a;
   color: #f5f5f5;
 }
-#frame .content .messages ul li.replies img {
+#frame .content .messages ul li.reply img {
   float: right;
   margin: 6px 0 0 8px;
 }
-#frame .content .messages ul li.replies p {
+#frame .content .messages ul li.reply div {
   background: #f5f5f5;
   float: right;
 }
@@ -590,7 +590,7 @@ body {
   border-radius: 50%;
   float: left;
 }
-#frame .content .messages ul li p {
+#frame .content .messages ul li div {
   display: inline-block;
   padding: 10px 15px;
   border-radius: 20px;
@@ -598,7 +598,7 @@ body {
   line-height: 130%;
 }
 @media screen and (min-width: 735px) {
-  #frame .content .messages ul li p {
+  #frame .content .messages ul li div {
     max-width: 300px;
   }
 }
@@ -724,7 +724,7 @@ body {
      border-color: #ccc;
 }
  .input-group {
-     margin-top: 35px;
+     margin-top: 25px;
 }
 
 #username:focus, #password:focus, #display:focus, #confirm:focus, #contactname:focus {
@@ -745,7 +745,7 @@ body {
  #login-submit, #contact-submit {
      color: #008080;
      background-color: #fff;
-     margin-top: 25px;
+     margin-top: 15px;
      transition: all 0.1s ease;
 }
  #login-submit:hover , #contact-submit:hover {
@@ -827,4 +827,8 @@ body {
 #feedback{
   padding-bottom: 10px;
   font-size: 0.8em;
+}
+
+.time{
+  font-size: 0.6em;
 }

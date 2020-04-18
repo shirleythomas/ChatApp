@@ -7,7 +7,7 @@ $(function(){
     var username = $("#username")
     var recipient = $("#activeuser")
     
-    var send_message = $("#send_message")
+    var send_message_btn = $("#send_message")
 
     var feedback = $("#feedback");
 
@@ -16,11 +16,15 @@ $(function(){
 
     var contact_submit = $("#contact_submit");
 
-    send_message.click(function(){
-        socket.emit("new_message",{message: message.val(),
-                                  username: username.val(),
-                                  recipient: recipient.val()});
-        newMessage("sent", message.val());
+    var sendmessage = function(){
+      socket.emit("new_message",{message: message.val(),
+        username: username.val(),
+        recipient: recipient.val()});
+      newMessage("sent", message.val());
+    }
+
+    send_message_btn.click(function(){
+        sendmessage();
     })
 
     socket.on("send_message",(data) => {
@@ -33,6 +37,10 @@ $(function(){
     
     message.bind("keypress", (event)=>{
         socket.emit('typing', {username: username.val(), recipient: recipient.val()})
+        if (event.which == 13) {
+          sendmessage();
+          return false;
+        }
     })
 
     socket.on("typing", (data) => {
@@ -67,8 +75,16 @@ $("#profile-img").click(function() {
 });
 
 $(".expand-button").click(function() {
-  $("#profile").toggleClass("expanded");
-	$("#contacts").toggleClass("expanded");
+  var url = window.location.href;
+  var index = url.indexOf("home");
+  if(index>0) {
+    url = url.replace('home', 'logout');
+    window.location.href = url;
+  }else{
+    window.location.href = url+"logout";
+  }
+  //$("#profile").toggleClass("expanded");
+	//$("#contacts").toggleClass("expanded");
 });
 
 $("#status-options ul li").click(function() {
@@ -99,7 +115,7 @@ function newMessage(responseType, message) {
 	if($.trim(message) == '') {
 		return false;
 	}
-	$('<li class="'+responseType+'"><img src="img/female_avatar.jpg" alt="" /><p>' + message + '</p></li>').appendTo($('.messages ul'));
+	$('<li class="'+responseType+'"><img src="img/female_avatar.jpg" alt="" /><div><p>' + message + '</p></div></li>').appendTo($('.messages ul'));
 	$('.message-input input').val(null);
 	$('.contact.active .preview').html('<span>You: </span>' + message);
 	$(".messages").animate({ scrollTop: $(document).height() }, "fast");
