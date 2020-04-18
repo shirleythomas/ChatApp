@@ -1,5 +1,5 @@
 # ChatApp
-Chat App using Node.js and MongoDB.
+Naive Chat App using Node.js and MongoDB.
 
 To get the app running:
 ```bash
@@ -7,6 +7,7 @@ $ npm install --save express
 $ npm install --save ejs
 $ npm install --save nodemon
 $ npm install --save socket.io
+$ npm install --save mongodb
 ```
 
 Launch app by running:
@@ -21,6 +22,9 @@ http://localhost:3000/
 
 # Password Hashing
 https://www.npmjs.com/package/password-hash
+
+# Session Management
+Right now it is stored in MongoDB to avoid complications but the best practice is to store it in Redis.
 
 # UI
 ![Login page](https://github.com/shirleythomas/ChatApp/blob/master/screenshot/login.jpg)
