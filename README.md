@@ -23,7 +23,7 @@ http://localhost:3000/
 https://www.npmjs.com/package/password-hash
 
 # UI
-[alt text](https://github.com/shirleythomas/ChatApp/blob/master/screenshot/login.png)
+[Login page](https://github.com/shirleythomas/ChatApp/blob/master/screenshot/login.png)
 
 
 # Credits
