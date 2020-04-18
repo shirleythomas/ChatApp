@@ -23,6 +23,9 @@ http://localhost:3000/
 # Password Hashing
 https://www.npmjs.com/package/password-hash
 
+# Session Management
+Right now it is stored in MongoDB to avoid complications but the best practice is to store it in Redis.
+
 # UI
 ![Login page](https://github.com/shirleythomas/ChatApp/blob/master/screenshot/login.jpg)
 
