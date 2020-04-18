@@ -15,3 +15,7 @@ db.createUser(
 // Create collections
 db.createCollection("users")
 
+db.createCollection("contacts")
+
+db.createCollection("chats")
+

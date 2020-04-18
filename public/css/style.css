@@ -727,7 +727,7 @@ body {
      margin-top: 35px;
 }
 
-#username:focus, #password:focus, #display:focus, #confirm:focus {
+#username:focus, #password:focus, #display:focus, #confirm:focus, #contactname:focus {
     /* border-top: 2px solid #0db8de;
      border-right: 2px solid #0db8de;
      border-bottom: 2px solid #0db8de;
@@ -736,19 +736,19 @@ body {
      border-bottom: 2px solid #b1b1b1;
      padding-bottom: 3.5px;
 }
-#username, #password, #display, #confirm {
+#username, #password, #display, #confirm, #contactname {
      border-radius: .25rem;
      display: block;
      box-sizing: border-box;
      -webkit-box-sizing: border-box;
 }
- #login-submit {
+ #login-submit, #contact-submit {
      color: #008080;
      background-color: #fff;
      margin-top: 25px;
      transition: all 0.1s ease;
 }
- #login-submit:hover {
+ #login-submit:hover , #contact-submit:hover {
     /*background-color: rgb(67,67,155);
     ;
      color:#fff;
@@ -811,4 +811,15 @@ body {
   text-align: center;
   padding-top: 10px;
   font-size: 0.8em;
+}
+
+#contactinfo{
+  z-index: 100;
+  position: absolute;
+  background-color: #1d181842;
+  width: 100%;
+  height: 100%;
+  text-align: center;
+  padding-top: 25%;
+  padding-left: 15%;
 }

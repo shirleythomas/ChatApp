@@ -5,13 +5,19 @@ $(function(){
 
     var message = $("#message")
     var username = $("#username")
+    var recipient = $("#activeuser")
     
     var send_message = $("#send_message")
 
-    var feedback = $("#feedback")
+    var feedback = $("#feedback");
+
+    var addcontact = $("#addcontact");
+    var contactinfo = $("#contactinfo");
+
+    var contact_submit = $("#contact_submit");
 
     send_message.click(function(){
-        socket.emit("new_message",{message: message.val(), username: username.val()});
+        socket.emit("new_message",{message: message.val(), username: username.val(), recipient: recipient.val()});
         newMessage("sent", message.val());
     })
 
@@ -28,6 +34,21 @@ $(function(){
     socket.on("typing", (data) => {
         console.log("typing")
         feedback.html("<p><i>"+data.username+" is typing a message...</i></p>")
+    })
+
+    addcontact.click(function(){
+      contactinfo.show();
+    })
+
+    contactinfo.focusout(function(){
+      contactinfo.hide();
+    })
+
+    contact_submit.click(function(){
+      event.preventDefault();
+      contactinfo.hide();
+
+      return false;
     })
 })
 

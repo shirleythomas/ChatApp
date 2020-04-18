@@ -19,29 +19,43 @@ app.get('/', (req, res) =>
 )
 
 app.post('/home', (req, res) => {
-    db("find", {"username":req.body.username}, function(data){
+    db("find", "users", {"username":req.body.username}, function(results){
+        data = results[0];
         if(passwordHash.verify(req.body.password, data.password)){
-            res.render("pages/index",{"pagename":"chat",
+            
+            db("find", "contacts", {"username":req.body.username}, function(contacts){
+                res.render("pages/index",{"pagename":"chat",
                                     "title":"Simple Chat App",
                                     "username":req.body.username,
-                                    "display":data.displayname});
+                                    "display":data.displayname,
+                                    "contacts":contacts});
+            });
+
+
+            
         }
+        
     });
+
     
 });
 
 app.get('/register', (req, res) => {
-    //console.log(req);
     res.render("pages/index",{"pagename":"register","title":"New User Account"});
 });
 
 app.post('/createuser', (req, res) => {
     var hashedPassword = passwordHash.generate(req.body.password);
-    //console.log(hashedPassword);
-    db("insert", {"username":req.body.username,
+    db("insert", "users", {"username":req.body.username,
                 "displayname":req.body.display,
                 "password":hashedPassword});
     res.redirect("/");
+});
+
+app.post('/addcontact', (req, res) => {
+    db("insert", "contacts", {"username":req.body.username,
+                "contactid":req.body.id,
+                "contactname":req.body.name});
 });
 
 // Instantiate server
@@ -51,11 +65,12 @@ const io = require("socket.io")(server)
 
 io.on('connection',(socket)=>{
     console.log("New User Connected.")
-    
+
     // Listen to the new message from client
     socket.on('new_message', (data) => {
         //broadcast the new message
-        io.sockets.emit('send_message', {message : data.message, username : data.username});
+        //io.sockets.emit('send_message', {message : data.message, username : data.username});
+        io.to(data.recipient).emit('send_message', {message : data.message, username : data.username});
     })
 
     // Listen to the typing event
