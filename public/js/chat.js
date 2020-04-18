@@ -17,23 +17,31 @@ $(function(){
     var contact_submit = $("#contact_submit");
 
     send_message.click(function(){
-        socket.emit("new_message",{message: message.val(), username: username.val(), recipient: recipient.val()});
+        socket.emit("new_message",{message: message.val(),
+                                  username: username.val(),
+                                  recipient: recipient.val()});
         newMessage("sent", message.val());
     })
 
     socket.on("send_message",(data) => {
-        if(data.username!==username.val()){
+      console.log(data.recipient);
+      console.log(username.val());
+        if(data.recipient === username.val()){
             newMessage("replies", data.message);
         }
     })
     
-    message.bind("keypress", ()=>{
-        socket.emit('typing', {username: username.val()})
+    message.bind("keypress", (event)=>{
+        socket.emit('typing', {username: username.val(), recipient: recipient.val()})
     })
 
     socket.on("typing", (data) => {
-        console.log("typing")
+      if(data.recipient === username.val()){
         feedback.html("<p><i>"+data.username+" is typing a message...</i></p>")
+        setTimeout(function(){
+          feedback.html("");
+        }, 5000);
+      }
     })
 
     addcontact.click(function(){

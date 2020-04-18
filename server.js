@@ -69,12 +69,12 @@ io.on('connection',(socket)=>{
     // Listen to the new message from client
     socket.on('new_message', (data) => {
         //broadcast the new message
-        //io.sockets.emit('send_message', {message : data.message, username : data.username});
-        io.to(data.recipient).emit('send_message', {message : data.message, username : data.username});
+        io.sockets.emit('send_message', {message : data.message, username : data.username, recipient: data.recipient});
+        //io.to(data.recipient).emit('send_message', {message : data.message, username : data.username});
     })
 
     // Listen to the typing event
     socket.on('typing', (data) => {
-    	socket.broadcast.emit('typing', {username : data.username})
+    	socket.broadcast.emit('typing', {username : data.username, recipient: data.recipient})
     })
 })

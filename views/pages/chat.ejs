@@ -50,9 +50,10 @@
     </div>
 </div>
 <div class="content">
+        <% if (contacts.length > 0) { %>
     <div class="contact-profile">
         <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
-        <input type="hidden" id="activeuser" value=<%= contacts[0].id %>/>
+        <input type="hidden" id="activeuser" value="<%= contacts[0].id %>" />
         <p><%= contacts[0].name %></p>
         <div class="social-media">
             <i class="fa fa-trash" aria-hidden="true"></i>
@@ -95,14 +96,15 @@
             </li>
         </ul>
     </div>
-    <section id="feedback"></section>
     <div class="message-input">
+        <div id="feedback"></div>
         <div class="wrap">
         <input type="text" placeholder="Write your message..." id="message"/>
         <i class="fa fa-paperclip attachment" aria-hidden="true"></i>
         <button class="submit" id="send_message"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
         </div>
     </div>
+<% } %>
 </div>
 <%- include ("addcontact")%>
 
