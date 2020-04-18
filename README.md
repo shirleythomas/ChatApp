@@ -1,5 +1,5 @@
 # ChatApp
-Chat App using Node.js and MongoDB.
+Naive Chat App using Node.js and MongoDB.
 
 To get the app running:
 ```bash
