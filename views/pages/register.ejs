@@ -36,7 +36,7 @@
                                  <label class="form-control-placeholder" for="confirm">Confirm Password</label>
                               </div>
                              <div>
-                                <button name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="LOGIN"><i class="fa fa-sign-in"></i> Create</button>
+                                <button type="submit" name="login-submit" id="login-submit" tabindex="4" class="form-control btn btn-login" value="LOGIN"><i class="fa fa-sign-in"></i> Create</button>
                              </div>
                            </form>
                        </div>
@@ -46,3 +46,10 @@
            </div>
         </div>
      </div>
+<script>
+$( "form" ).on( "submit", function( event ) {
+  event.stopPropagation();
+  //event.preventDefault();
+  $("#login-submit").attr("disabled", true);
+});
+</script>

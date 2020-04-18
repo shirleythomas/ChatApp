@@ -1,0 +1,17 @@
+
+// Create database
+use chatapp
+
+//User for the app to access db
+db.createUser(
+    {
+    user: "chatappuser",
+    pwd: "test123",
+    roles: [ { role: "readWrite", db: "chatapp" } ]
+    }
+)
+
+
+// Create collections
+db.createCollection("users")
+

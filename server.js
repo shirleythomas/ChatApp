@@ -1,7 +1,12 @@
 const express = require("express")
 const bodyParser = require('body-parser');
+const passwordHash = require('password-hash');
+
 const app = express()
 const port = 3000
+
+const db = require('./database')
+console.log(db);
 
 // Set template engine
 app.set("view engine","ejs")
@@ -14,9 +19,15 @@ app.get('/', (req, res) =>
 )
 
 app.post('/home', (req, res) => {
-    console.log(req.body);
-    //res.status(200).json({"pagename":"chat","title":"Simple Chat App"});
-    res.render("pages/index",{"pagename":"chat","title":"Simple Chat App"});
+    db("find", {"username":req.body.username}, function(data){
+        if(passwordHash.verify(req.body.password, data.password)){
+            res.render("pages/index",{"pagename":"chat",
+                                    "title":"Simple Chat App",
+                                    "username":req.body.username,
+                                    "display":data.displayname});
+        }
+    });
+    
 });
 
 app.get('/register', (req, res) => {
@@ -25,18 +36,22 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/createuser', (req, res) => {
-    //console.log(req);
+    var hashedPassword = passwordHash.generate(req.body.password);
+    //console.log(hashedPassword);
+    db("insert", {"username":req.body.username,
+                "displayname":req.body.display,
+                "password":hashedPassword});
     res.redirect("/");
 });
 
 // Instantiate server
-server = app.listen(port, () => console.log('App listening at http://localhost:${port}'))
+server = app.listen(port, () => console.log(`App listening at http://localhost:${port}`))
 
 const io = require("socket.io")(server)
 
 io.on('connection',(socket)=>{
     console.log("New User Connected.")
-
+    
     // Listen to the new message from client
     socket.on('new_message', (data) => {
         //broadcast the new message
