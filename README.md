@@ -22,6 +22,9 @@ http://localhost:3000/
 # Password Hashing
 https://www.npmjs.com/package/password-hash
 
+# UI
+[alt text](https://github.com/shirleythomas/ChatApp/blob/master/screenshot/login.png)
+
 
 # Credits
 Started with the tutorial:
