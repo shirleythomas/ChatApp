@@ -30,12 +30,11 @@ Right now it is stored in MongoDB to avoid complications but the best practice i
 # UI
 ![Login page](https://github.com/shirleythomas/ChatApp/blob/master/screenshot/login.jpg)
 
-
-# Credits
-Started with the tutorial:
-
+# Tutorial
+Started off with:
 https://medium.com/@noufel.gouirhate/build-a-simple-chat-app-with-node-js-and-socket-io-ea716c093088
 
+# Credits
 Initial HTML Template
 
 https://codepen.io/emilcarlsson/pen/ZOQZaV
