@@ -7,6 +7,7 @@ $ npm install --save express
 $ npm install --save ejs
 $ npm install --save nodemon
 $ npm install --save socket.io
+$ npm install --save mongodb
 ```
 
 Launch app by running:
