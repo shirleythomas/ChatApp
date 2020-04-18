@@ -101,9 +101,17 @@ app.post('/createuser', (req, res) => {
 });
 
 app.post('/addcontact', (req, res) => {
+    console.log("insert");
     db("insert", "contacts", {"username":req.body.username,
-                "contactid":req.body.id,
-                "contactname":req.body.name});
+                "id":req.body.contactname,
+                "name":req.body.contactname});
+    console.log("done");
+});
+
+app.get('/contacts', (req, res) => {
+    db("find", "users", {"username":new RegExp(req.query.search,"i")}, function(contacts){
+            res.json(contacts);
+    });
 });
 
 // Instantiate server

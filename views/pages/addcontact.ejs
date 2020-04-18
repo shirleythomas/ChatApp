@@ -1,6 +1,5 @@
 <div id="contactinfo" style="display:none">
-<div class="container">
-<div class="row" style="max-width:540px">
+<div class="row" id="contactrow">
     <div class="col-md-6 col-md-offset-3">
         <div class="panel panel-login">
             <div class="panel-heading">
@@ -11,11 +10,15 @@
             <div class="row">
                 <div class="col-lg-12">
                     <form id="contact-form" action="addcontact" method="post" role="form" style="display: block;">
-                        <div class="form-group input-group">
-                        <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                        <input type="text" name="contactname" id="contactname" tabindex="2" class="form-control" required placeholder=" ">
-                                                    <label class="form-control-placeholder" for="contactname">Contact</label>
+                        <div class="form-group input-group ui-widget">
+                            <span class="input-group-addon"><i class="fa fa-user"></i></span>
+                            <input type="text" name="contactname" id="contactname" tabindex="2" class="form-control" required placeholder=" ">
+                            <label class="form-control-placeholder" for="contactname">Contact</label>
                         </div>
+                        <!--div class="ui-widget">
+                            <label for="tags">Tags: </label>
+                            <input id="tags">
+                        </div-->
                         <div>
                             <button id="contact-submit" tabindex="3" class="form-control btn btn-login"><i class="fa fa-user-plus fa-fw"></i> Add</button>
                         </div>
@@ -25,6 +28,5 @@
             </div>
         </div>
     </div>
-</div>
 </div>
 </div>

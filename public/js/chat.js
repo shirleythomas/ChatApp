@@ -14,7 +14,7 @@ $(function(){
     var addcontact = $("#addcontact");
     var contactinfo = $("#contactinfo");
 
-    var contact_submit = $("#contact_submit");
+    var contact_submit = $("#contact-submit");
 
     var search_contact = $("#searchcontact");
 
@@ -59,6 +59,24 @@ $(function(){
       });*/
     })
 
+    var contactname = $("#contactname");
+    contactname.bind("keyup", (event)=>{
+      $.get( "/contacts", { search: contactname.val() }).done(function( data ) {
+        console.log(data);
+        var availableTags = [];
+        var names = $(".name").map(function(){return $(this).html();}).get();
+        console.log(names);
+        data.forEach(function (element) {
+          if(!names.includes(element.displayname)){
+            availableTags.push(element.displayname);
+          }
+        });
+        $( "#contactname" ).autocomplete({
+          source: availableTags
+        });
+      });
+    })
+
     socket.on("typing", (data) => {
       if(data.recipient === username.val()){
         feedback.html("<p><i>"+data.username+" is typing a message...</i></p>")
@@ -72,16 +90,26 @@ $(function(){
       contactinfo.show();
     })
 
-    contactinfo.focusout(function(){
+    $("#addcontacticon").click(function(){
+      contactinfo.show();
+    })
+
+
+    var closeContact = function(){
       contactinfo.hide();
+      contactname.val("");
+    }
+
+    contactinfo.focusout(function(){
+      closeContact();
     })
 
     contact_submit.click(function(){
-      event.preventDefault();
-      contactinfo.hide();
-
-      return false;
+      console.log(11);
+      $("#contact-form").submit();
+      closeContact();
     })
+
 })
 
 $(".messages").animate({ scrollTop: $(document).height() }, "fast");

@@ -31,6 +31,8 @@ var execute = function(method, coll, data, callback){
             dbo.collection(coll).find(data).toArray(function(err, result) {
                 if (err) throw err;
 
+                console.log(data);
+                console.log(result);
                 client.close();
                 callback(result);
               });
