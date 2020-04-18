@@ -16,6 +16,8 @@ $(function(){
 
     var contact_submit = $("#contact_submit");
 
+    var search_contact = $("#searchcontact");
+
     var sendmessage = function(){
       socket.emit("new_message",{message: message.val(),
         username: username.val(),
@@ -41,6 +43,20 @@ $(function(){
           sendmessage();
           return false;
         }
+    })
+
+    search_contact.bind("keyup", (event)=>{
+      console.log(event);
+      $(".name").each(function() {
+        if($( this ).html().toLowerCase().indexOf(search_contact.val().toLowerCase()) >= 0){
+          $( this ).closest( "li" ).show();
+        }else{
+          $( this ).closest( "li" ).hide();
+        }
+      });
+      /*$(".name:contains('"+search_contact.val()+"')").each(function() {
+        $( this ).closest( "li" ).show();
+      });*/
     })
 
     socket.on("typing", (data) => {
