@@ -35,6 +35,7 @@
                         <span class="contact-status away"></span>
                         <img src="http://emilcarlsson.se/assets/rachelzane.png" alt="" />
                         <div class="meta">
+                            <p class="id" style="display:none"><%= contacts[i].id %></p>
                             <p class="name"><%= contacts[i].name %></p>
                             <p class="preview">I was thinking that we could have chicken tonight, sounds good?</p>
                         </div>
@@ -54,14 +55,14 @@
     <div class="contact-profile">
         <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
         <input type="hidden" id="activeuser" value="<%= contacts[0].id %>" />
-        <p><%= contacts[0].name %></p>
+        <p id="activedisplay"><%= contacts[0].name %></p>
         <div class="social-media">
             <i class="fa fa-trash" aria-hidden="true"></i>
             <i class="fa fa-info-circle" aria-hidden="true"></i>
         </div>
     </div>
     <div class="messages">
-        <ul>
+        <ul id="messages">
             <% for(var i=0; i < chats.length; i++) { %>
             <li class="<%= chats[i].type %>">
                 <img src="img/female_avatar.jpg" alt="" />

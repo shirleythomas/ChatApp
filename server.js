@@ -32,7 +32,6 @@ app.use(session({secret: 'my-secret-key',
             }));
 
 var openChat = function(req, res){
-    //console.log(req.body);
     sess = req.session;
     //console.log(sess);
     var username = "";
@@ -47,15 +46,23 @@ var openChat = function(req, res){
         data = results[0];
         if(sess.user || passwordHash.verify(req.body.password, data.password)){
             db("find", "contacts", {"username":username}, function(contacts){
-                db("find", "chats", {"sender":username}, function(chats){
-                    
+                if(contacts.length>0){
+                    db("find", "chats", {"sender":username, "recipient":contacts[0].id}, function(chats){
+                        
+                        res.render("pages/index",{"pagename":"chat",
+                                            "title":"Simple Chat App",
+                                            "username":username,
+                                            "display":data.displayname,
+                                            "contacts":contacts,
+                                            "chats": chats});
+                    });
+                } else{
                     res.render("pages/index",{"pagename":"chat",
-                                        "title":"Simple Chat App",
-                                        "username":username,
-                                        "display":data.displayname,
-                                        "contacts":contacts,
-                                        "chats": chats});
-                });
+                                            "title":"Simple Chat App",
+                                            "username":username,
+                                            "display":data.displayname,
+                                            "contacts":contacts});
+                }
             });
         }
     });
@@ -103,7 +110,7 @@ app.post('/createuser', (req, res) => {
 app.post('/addcontact', (req, res) => {
     console.log("insert");
     db("insert", "contacts", {"username":req.body.username,
-                "id":req.body.contactname,
+                "id":req.body.contactid,
                 "name":req.body.contactname});
     console.log("done");
     res.redirect("/");
@@ -112,6 +119,12 @@ app.post('/addcontact', (req, res) => {
 app.get('/contacts', (req, res) => {
     db("find", "users", {"displayname":new RegExp(req.query.search,"i")}, function(contacts){
             res.json(contacts);
+    });
+});
+
+app.get('/chats', (req, res) => {
+    db("find", "chats", {"sender":req.query.username, "recipient":req.query.recipient}, function(chats){
+            res.json(chats);
     });
 });
 

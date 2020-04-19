@@ -120,6 +120,29 @@ $(function(){
       closeContact();
     })
 
+
+    $("#contacts ul li").click(function() {
+      $("#contacts ul li").removeClass("active");
+      $(this).addClass("active");
+
+      activeuser=$(this).find(".id")[0].innerHTML;
+      recipient.html(activeuser);
+      console.log(activeuser);
+      $("#activedisplay").html($(this).find(".name")[0].innerHTML);
+
+      $.get("/chats", { "username": username.val(), "recipient": activeuser}).done(function( data ) {
+
+              $("#messages").html("");
+              data.forEach(function(element) {
+                  newMessage(element.type, element.message);
+              })
+              
+            }).fail(function(err) {
+              console.log( err);
+            });
+
+    });
+
 })
 
 $(".messages").animate({ scrollTop: $(document).height() }, "fast");
