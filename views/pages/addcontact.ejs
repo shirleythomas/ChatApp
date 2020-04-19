@@ -12,7 +12,10 @@
                     <form id="contact-form" action="addcontact" method="post" role="form" style="display: block;">
                         <div class="form-group input-group ui-widget">
                             <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                            <input type="text" name="contactname" id="contactname" tabindex="2" class="form-control" required placeholder=" ">
+                            <input type="text" name="contactname" id="contactname" class="form-control" required placeholder=" " list="contactlist" />
+                            <datalist id="contactlist">
+                            </datalist>
+                            <!--input type="text"  tabindex="2" class="form-control" required placeholder=" "-->
                             <label class="form-control-placeholder" for="contactname">Contact</label>
                         </div>
                         <!--div class="ui-widget">

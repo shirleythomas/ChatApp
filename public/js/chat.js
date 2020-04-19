@@ -60,22 +60,27 @@ $(function(){
     })
 
     var contactname = $("#contactname");
+    //var availableTags = [];
+
     contactname.bind("keyup", (event)=>{
       $.get( "/contacts", { search: contactname.val() }).done(function( data ) {
-        console.log(data);
-        var availableTags = [];
+        $('#contactlist').empty();
+        //console.log(data);
         var names = $(".name").map(function(){return $(this).html();}).get();
-        console.log(names);
+        //console.log(names);
+        
         data.forEach(function (element) {
           if(!names.includes(element.displayname)){
-            availableTags.push(element.displayname);
+            $("#contactlist").append( $("<option>").attr('data-value', element.username).text(element.displayname));
+            //availableTags.push(element);
           }
         });
-        $( "#contactname" ).autocomplete({
+        /*$( "#contactname" ).autocomplete({
           source: availableTags
-        });
+        });*/
       });
     })
+
 
     socket.on("typing", (data) => {
       if(data.recipient === username.val()){
@@ -100,13 +105,18 @@ $(function(){
       contactname.val("");
     }
 
-    contactinfo.focusout(function(){
+    /*contactinfo.focusout(function(){
       closeContact();
-    })
+    })*/
 
     contact_submit.click(function(){
-      console.log(11);
-      $("#contact-form").submit();
+      var contacthtml = $("#contactlist").html();
+      console.log(contacthtml);
+      $.post( "/addcontact", { username: username.val(),
+                              contactid: $(contacthtml).attr("data-value"),
+                              contactname: $(contacthtml).val() }).done(function( data ) {
+                                console.log(data);
+                              });
       closeContact();
     })
 

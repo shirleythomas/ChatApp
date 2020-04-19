@@ -106,10 +106,11 @@ app.post('/addcontact', (req, res) => {
                 "id":req.body.contactname,
                 "name":req.body.contactname});
     console.log("done");
+    res.redirect("/");
 });
 
 app.get('/contacts', (req, res) => {
-    db("find", "users", {"username":new RegExp(req.query.search,"i")}, function(contacts){
+    db("find", "users", {"displayname":new RegExp(req.query.search,"i")}, function(contacts){
             res.json(contacts);
     });
 });
