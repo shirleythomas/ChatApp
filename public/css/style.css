@@ -793,9 +793,23 @@ body {
      opacity: 1;
 }
 
-.login-avatar {
+.logo {
   display: block;
   width: 220px;
+  border-radius: 50%;
+  overflow: hidden;
+  margin: 0 auto;
+}
+
+.logo img {
+  width: 100%;
+  vertical-align: middle;
+  border-style: none;
+}
+
+.login-avatar {
+  display: block;
+  width: 120px;
   border-radius: 50%;
   overflow: hidden;
   margin: 0 auto;

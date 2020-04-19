@@ -1,44 +1,70 @@
 var MongoClient = require('mongodb').MongoClient;
 
-const url = 'mongodb://localhost:27017';
+const mongourl = 'mongodb://localhost:27017';
 const dbName = "chatapp";
 
+var get_session_store = function(session){
+    const MongoStore = require('connect-mongo')(session);
 
-var execute = function(method, coll, data, callback){
+    var MongoSessionStore = new MongoStore({ url: mongourl+"/"+dbName,
+                                ttl: 24 * 60 * 60 // Keeps session open for 1 day 
+                            });
+    return MongoSessionStore;
+}
+
+//options: method, coll, data, sort, order, limit
+var execute = function(options, callback){
 
     // Connect to the db
-    MongoClient.connect(url, function (err, client) {
+    MongoClient.connect(mongourl, function (err, client) {
 
         const dbo = client.db(dbName);
     
         if (err) return console.log(err);
 
-        if(method === "insert"){
+        if(options.method === "insert"){
 
-            dbo.collection(coll, function (err, collection) {
-                console.log(data)
+            dbo.collection(options.coll, function (err, collection) {
                 
-                collection.insertOne(data);
+                collection.insertOne(options.data);
                 //collection.insert({ id: 2, firstName: 'Bill', lastName: 'Gates' });
 
-                dbo.collection(coll).countDocuments(function (err, count) {
+                dbo.collection(options.coll).countDocuments(function (err, count) {
                     if (err) throw err;
                     
                     console.log('Total Rows: ' + count);
                 });
             });
-        } else if(method === "find") {
-            dbo.collection(coll).find(data).toArray(function(err, result) {
-                if (err) throw err;
+        } else if(options.method === "find") {
 
-                console.log(data);
-                console.log(result);
-                client.close();
-                callback(result);
-              });
+            var query = dbo.collection(options.coll).find(options.data);//.sort({"time":-1}).limit(10)
 
-        } else if(method === "delete") {
-            dbo.collection(coll).deleteOne(data, function(err, obj) {
+            //console.log(query);
+
+            if(options.sort){
+                var order = options.order;
+                var sort = options.sort;
+                
+                var sortby ={};
+                sortby[sort] = order;
+                query = query.sort(sortby);
+            }
+
+            if(options.limit){
+                query = query.limit(parseInt(options.limit));
+            }
+            
+            query.toArray(function(err, result) {
+                    if (err) throw err;
+    
+                    //console.log(result);
+                    client.close();
+                    callback(result);
+                  });
+            
+
+        } else if(options.method === "delete") {
+            dbo.collection(options.coll).deleteOne(options.data, function(err, obj) {
                 if (err) throw err;
                 console.log("1 document deleted");
             });
@@ -49,4 +75,4 @@ var execute = function(method, coll, data, callback){
     });
 }
 
-module.exports = execute;
+module.exports = {execute, get_session_store};

@@ -1,11 +1,16 @@
 $(function(){
 
-    // establish connection
-    var socket = io.connect("http://localhost:3000")
 
-    var message = $("#message")
     var username = $("#username")
+    var message = $("#message")
     var recipient = $("#activeuser")
+
+    // establish connection
+    var socket = io.connect("http://localhost:3000/");
+
+    socket.on('connect',function(){
+      socket.emit("connectioninfo",{user: username.val()});
+    });
     
     var send_message_btn = $("#send_message")
 
@@ -19,9 +24,12 @@ $(function(){
     var search_contact = $("#searchcontact");
 
     var sendmessage = function(){
+      var now = Date.now();
       socket.emit("new_message",{message: message.val(),
         username: username.val(),
-        recipient: recipient.val()});
+        recipient: recipient.val(),
+        time: now});
+        $("#lastmsgtime").val(now);
       newMessage("sent", message.val());
     }
 
@@ -32,9 +40,10 @@ $(function(){
     socket.on("send_message",(data) => {
       console.log(data.recipient);
       console.log(username.val());
-        if(data.recipient === username.val()){
-            newMessage("replies", data.message);
-        }
+        //if(data.recipient === username.val()){
+            newMessage("reply", data.message);
+            $("#lastmsgtime").val(data.time);
+        //}
     })
     
     message.bind("keypress", (event)=>{
@@ -75,9 +84,6 @@ $(function(){
             //availableTags.push(element);
           }
         });
-        /*$( "#contactname" ).autocomplete({
-          source: availableTags
-        });*/
       });
     })
 
@@ -87,7 +93,7 @@ $(function(){
         feedback.html("<p><i>"+data.username+" is typing a message...</i></p>")
         setTimeout(function(){
           feedback.html("");
-        }, 5000);
+        }, 3000);
       }
     })
 
@@ -126,16 +132,22 @@ $(function(){
       $(this).addClass("active");
 
       activeuser=$(this).find(".id")[0].innerHTML;
-      recipient.html(activeuser);
+      recipient.val(activeuser);
+      
       console.log(activeuser);
       $("#activedisplay").html($(this).find(".name")[0].innerHTML);
 
       $.get("/chats", { "username": username.val(), "recipient": activeuser}).done(function( data ) {
+              $(".messageul").hide();
+              if( $("#"+activeuser).length ){ // if active user tab exists
+                $("#"+activeuser).show();
+              } else {
+                $('<ul class="messageul" id="'+activeuser+'"></ul>').appendTo($(".messages"));
 
-              $("#messages").html("");
-              data.forEach(function(element) {
+                data.forEach(function(element) {
                   newMessage(element.type, element.message);
-              })
+                })
+              }
               
             }).fail(function(err) {
               console.log( err);
@@ -192,7 +204,7 @@ function newMessage(responseType, message) {
 	if($.trim(message) == '') {
 		return false;
 	}
-	$('<li class="'+responseType+'"><img src="img/female_avatar.jpg" alt="" /><div><p>' + message + '</p></div></li>').appendTo($('.messages ul'));
+	$('<li class="'+responseType+'"><img src="img/female_avatar.jpg" alt="" /><div><p>' + message + '</p></div></li>').appendTo($('.messages ul:visible'));
 	$('.message-input input').val(null);
 	$('.contact.active .preview').html('<span>You: </span>' + message);
 	$(".messages").animate({ scrollTop: $(document).height() }, "fast");

@@ -2,13 +2,7 @@ const express = require("express")
 const bodyParser = require('body-parser');
 const passwordHash = require('password-hash');
 const session = require('express-session');
-const mongoose = require('mongoose');
-const MongoStore = require('connect-mongo')(session);
 const cookieParser = require('cookie-parser');
-
-mongoose.connect('mongodb://localhost:27017/chatapp');
-mongoose.Promise = global.Promise;
-const db1 = mongoose.connection
 
 const app = express()
 const port = 3000
@@ -26,9 +20,7 @@ app.use(session({secret: 'my-secret-key',
                 saveUninitialized: true,
                 resave: true,
                 cookie: { maxAge: 24*60*60*1000 }, //3 hours
-                store: new MongoStore({ mongooseConnection: db1,
-                    ttl: 24 * 60 * 60 // Keeps session open for 1 day 
-                })
+                store: db.get_session_store(session)
             }));
 
 var openChat = function(req, res){
@@ -39,29 +31,45 @@ var openChat = function(req, res){
         username = sess.user;
     }else{
         username = req.body.username;
-        req.session.user = username;
-        req.session.save();
     }
-    db("find", "users", {"username":username}, function(results){
-        data = results[0];
-        if(sess.user || passwordHash.verify(req.body.password, data.password)){
-            db("find", "contacts", {"username":username}, function(contacts){
+
+    var options = {method:"find", coll: "users", data:{"username":username}};
+    db.execute(options, function(results){
+        user = results[0];
+        if(sess.user || passwordHash.verify(req.body.password, user.password)){
+
+            options = {method:"find", coll: "contacts", data:{"username":username}};
+            db.execute(options, function(contacts){
                 if(contacts.length>0){
-                    db("find", "chats", {"sender":username, "recipient":contacts[0].id}, function(chats){
+                    options = {method:"find",
+                                coll: "chats",
+                                sort: "time",
+                                order: -1,
+                                limit: 10,
+                                data:{"sender":username, "recipient":contacts[0].id}};
+                    db.execute(options, function(chats){
                         
                         res.render("pages/index",{"pagename":"chat",
                                             "title":"Simple Chat App",
                                             "username":username,
-                                            "display":data.displayname,
+                                            "display":user.displayname,
                                             "contacts":contacts,
                                             "chats": chats});
+                                            
+                        
+                        req.session.user = username;
+                        req.session.save();
                     });
                 } else{
                     res.render("pages/index",{"pagename":"chat",
                                             "title":"Simple Chat App",
                                             "username":username,
-                                            "display":data.displayname,
+                                            "display":user.displayname,
                                             "contacts":contacts});
+
+
+                    req.session.user = username;
+                    req.session.save();
                 }
             });
         }
@@ -101,29 +109,36 @@ app.get('/register', (req, res) => {
 
 app.post('/createuser', (req, res) => {
     var hashedPassword = passwordHash.generate(req.body.password);
-    db("insert", "users", {"username":req.body.username,
-                "displayname":req.body.display,
-                "password":hashedPassword});
+
+    var options = {method:"insert", coll: "users", data:{"username":req.body.username,
+                                            "displayname":req.body.display,
+                                            "password":hashedPassword}};
+    db.execute(options);
     res.redirect("/");
 });
 
 app.post('/addcontact', (req, res) => {
     console.log("insert");
-    db("insert", "contacts", {"username":req.body.username,
-                "id":req.body.contactid,
-                "name":req.body.contactname});
+
+    var options = {method:"insert", coll: "contacts", data:{"username":req.body.username,
+                                                "id":req.body.contactid,
+                                                "name":req.body.contactname}};
+    db.execute(options);
     console.log("done");
     res.redirect("/");
 });
 
 app.get('/contacts', (req, res) => {
-    db("find", "users", {"displayname":new RegExp(req.query.search,"i")}, function(contacts){
+    var options = {method:"find", coll: "contacts", data:{"displayname":new RegExp(req.query.search,"i")}};
+    db.execute(options, function(contacts){
             res.json(contacts);
     });
 });
 
 app.get('/chats', (req, res) => {
-    db("find", "chats", {"sender":req.query.username, "recipient":req.query.recipient}, function(chats){
+    var options = {method:"find", coll: "chats",
+                    data:{"sender":req.query.username, "recipient":req.query.recipient}};
+    db.execute(options, function(chats){
             res.json(chats);
     });
 });
@@ -131,26 +146,53 @@ app.get('/chats', (req, res) => {
 // Instantiate server
 server = app.listen(port, () => console.log(`App listening at http://localhost:${port}`))
 
+// Socket programming
 const io = require("socket.io")(server)
+var socketids=[];
 
 io.on('connection',(socket)=>{
-    console.log("New User Connected.")
+
+    socket.on('connectioninfo', (data) => {
+        console.log(data.user+" connected.")
+        //console.log(data);
+        //console.log(socket.id);
+        socketids[socket.id] = data.user;
+        //console.log(socketids);
+        
+    });
 
     // Listen to the new message from client
     socket.on('new_message', (data) => {
+
+        var filtered = Object.keys(socketids).filter(key => socketids[key] === data.recipient);
+        console.log(filtered);
+
         //broadcast the new message
-        var now = Date.now();
-        io.sockets.emit('send_message', {message : data.message, username : data.username, recipient: data.recipient, time: now});
+        io.sockets.in(filtered).emit('send_message', {message : data.message, username : data.username, recipient: data.recipient, time: data.time});
         //io.to(data.recipient).emit('send_message', {message : data.message, username : data.username});
-        db("insert", "chats", {"sender":data.username, "recipient": data.recipient,
-                "message":data.message, "type": "sent", "time":now});
+        
+        // Insert into chats
+        var options = {method:"insert", coll: "chats",
+                        data:{"sender":data.username, "recipient": data.recipient,
+                            "message":data.message, "type": "sent", "time":data.time}};
+    
+        db.execute(options);
+
         // Duplicate entry to be seen in the receiver screen.
-        db("insert", "chats", {"sender":data.recipient, "recipient": data.username,
-                "message":data.message, "type": "reply", "time":now});
+        options = {method:"insert", coll: "chats",
+                        data:{"sender":data.recipient, "recipient": data.username,
+                        "message":data.message, "type": "reply", "time":data.time}};
+        /*options.data = {"sender":data.recipient, "recipient": data.username,
+                        "message":data.message, "type": "reply", "time":data.time};*/
+        db.execute(options);
     })
 
     // Listen to the typing event
     socket.on('typing', (data) => {
     	socket.broadcast.emit('typing', {username : data.username, recipient: data.recipient})
+    })
+
+    socket.on('disconnect', (data) => {
+        delete socketids[socket.id];
     })
 })
