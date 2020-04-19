@@ -9,6 +9,7 @@ $ npm install --save nodemon
 $ npm install --save socket.io
 $ npm install --save mongodb
 $ npm install --save express-session
+$ npm install --save multer
 ```
 
 Launch app by running:
