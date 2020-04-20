@@ -524,8 +524,8 @@ body {
   float: left;
   margin: 9px 12px 0 9px;
 }
-#frame .content .contact-profile p {
-  float: left;
+#frame .content .contact-profile #availability {
+  font-size: 0.8em;
 }
 #frame .content .contact-profile .social-media {
   float: right;
@@ -867,4 +867,15 @@ body {
 #msg{
   text-align: center;
   width: 100%;
+}
+
+#picbox > input {
+  visibility:hidden;
+  width:0;
+  height:0
+}
+
+#picbox{
+  margin-top: -14%;
+  margin-left: 60%;
 }

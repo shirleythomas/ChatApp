@@ -4,6 +4,7 @@ function validate(event){
 
     if(password!==confirm){
         event.preventDefault();
+        $("#status").val("Password and Confirm Password do not match.");
         return false;
     }
 

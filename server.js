@@ -146,7 +146,7 @@ app.post('/createuser', (req, res) => {
         // Hash password
         formData["password"] = passwordHash.generate(formData["password"]);
 
-        console.log(formData);
+        //console.log(formData);
         var options = {method:"insert", coll: "users", data: formData};
         db.execute(options);
 
@@ -202,6 +202,11 @@ io.on('connection',(socket)=>{
         //console.log(data);
         //console.log(socket.id);
         socketids[socket.id] = data.user;
+
+        options = {method:"update", coll: "users", upsert:false,
+                        query:{username:data.user},
+                        data:{"status":"online"}};
+        db.execute(options);
         //console.log(socketids);
         
     });
@@ -244,6 +249,11 @@ io.on('connection',(socket)=>{
     })
 
     socket.on('disconnect', (data) => {
+        options = {method:"update", coll: "users", upsert:false,
+                        query:{username:socketids[socket.id]},
+                        data:{"status":"offline"}};
+        db.execute(options);
+
         delete socketids[socket.id];
     })
 })
