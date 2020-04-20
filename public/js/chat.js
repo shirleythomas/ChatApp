@@ -78,7 +78,7 @@ $(function(){
         //console.log(names);
         
         data.forEach(function (element) {
-          if(!names.includes(element.displayname)){
+          if(element.username!==username.val() && !names.includes(element.displayname)){
             $("#contactlist").append( $("<option>").attr('data-value', element.username).text(element.displayname));
             
           }

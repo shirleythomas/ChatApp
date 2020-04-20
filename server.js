@@ -131,8 +131,12 @@ app.post('/createuser', (req, res) => {
         }
     })
     .on('fileBegin', (name, file) => {
-        filename = folder + new Date().getTime().toString()+'_'+file.name
-        file.path = filename
+        if(file.name){
+            filename = folder + new Date().getTime().toString()+'_'+file.name
+            file.path = filename
+        }/*else{
+            filename = "./public/img/default_avatar.png";
+        }*/
         //formData["avatar"] = filename;
 
     })
@@ -141,13 +145,14 @@ app.post('/createuser', (req, res) => {
         // Hash password
         formData["password"] = passwordHash.generate(formData["password"]);
 
+        console.log(formData);
+        var options = {method:"insert", coll: "users", data: formData};
+        db.execute(options);
+
         fs.rename(filename, folder+formData["username"], function(err) {
             if ( err ) console.log('ERROR: ' + err);
         });
 
-        console.log(formData);
-        var options = {method:"insert", coll: "users", data: formData};
-        db.execute(options);
         res.redirect("/");
     })
 

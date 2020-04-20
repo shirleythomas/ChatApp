@@ -46,11 +46,11 @@ $(function(){
         function(data){
             //console.log(data);
             $.post( "/home", {username: $("#username").val(), password: $("#password").val()})
-            .done(function( d ) {
-                    console.log(d);
-                    }).fail(function(xhr, status, error) {
-                        $('#status').text(xhr.responseJSON.error);
-                    });
+            .done(function( chatdiv ) {
+                $('#frame').html(chatdiv);
+            }).fail(function(xhr, status, error) {
+                $('#status').text(xhr.responseJSON.error);
+            });
             return false;
     });
 });
