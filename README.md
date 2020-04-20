@@ -33,6 +33,9 @@ Right now it is stored in MongoDB to avoid complications but the best practice i
 
 ![New User page](https://github.com/shirleythomas/ChatApp/blob/master/screenshot/newuser.jpg)
 
+![Chat page](https://github.com/shirleythomas/ChatApp/blob/master/screenshot/chat.gif)
+
+
 # Tutorial
 Started off with:
 https://medium.com/@noufel.gouirhate/build-a-simple-chat-app-with-node-js-and-socket-io-ea716c093088
