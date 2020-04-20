@@ -30,6 +30,7 @@ Right now it is stored in MongoDB to avoid complications but the best practice i
 
 # UI
 ![Login page](https://github.com/shirleythomas/ChatApp/blob/master/screenshot/login.jpg)
+![New User page](https://github.com/shirleythomas/ChatApp/blob/master/screenshot/newuser.jpg)
 
 # Tutorial
 Started off with:
