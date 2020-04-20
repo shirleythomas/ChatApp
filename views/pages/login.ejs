@@ -13,6 +13,7 @@
             </div>
             <div class="panel-body">
             <div class="row">
+                <div id="msg"><span id="status"></span></div>
                 <div class="col-lg-12">
                     <form id="login-form" action="home" method="post" role="form" style="display: block;">
                         <div class="form-group input-group">
@@ -23,7 +24,7 @@
                         <div class="form-group input-group">
                         <span class="input-group-addon"><i class="fa fa-lock"></i></span>
                         <input type="password" name="password" id="password" tabindex="2" class="form-control" required placeholder=" ">
-                                                    <label class="form-control-placeholder" for="password">Password</label>
+                        <label class="form-control-placeholder" for="password">Password</label>
                         </div>
                         <div>
                         <button id="login-submit" tabindex="3" class="form-control btn btn-login"><i class="fa fa-sign-in"></i> Sign In</button>
@@ -39,3 +40,18 @@
     </div>
 </div>
 </div>
+<script>
+$(function(){
+    $("#login-form").on("submit",
+        function(data){
+            //console.log(data);
+            $.post( "/home", {username: $("#username").val(), password: $("#password").val()})
+            .done(function( d ) {
+                    console.log(d);
+                    }).fail(function(xhr, status, error) {
+                        $('#status').text(xhr.responseJSON.error);
+                    });
+            return false;
+    });
+});
+</script>

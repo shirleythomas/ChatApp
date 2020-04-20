@@ -69,19 +69,18 @@ $(function(){
     })
 
     var contactname = $("#contactname");
-    //var availableTags = [];
 
     contactname.bind("keyup", (event)=>{
       $.get( "/contacts", { search: contactname.val() }).done(function( data ) {
         $('#contactlist').empty();
-        //console.log(data);
+        console.log(data);
         var names = $(".name").map(function(){return $(this).html();}).get();
         //console.log(names);
         
         data.forEach(function (element) {
           if(!names.includes(element.displayname)){
             $("#contactlist").append( $("<option>").attr('data-value', element.username).text(element.displayname));
-            //availableTags.push(element);
+            
           }
         });
       });
@@ -136,6 +135,7 @@ $(function(){
       
       console.log(activeuser);
       $("#activedisplay").html($(this).find(".name")[0].innerHTML);
+      $("#recipient_avatar").attr("src","avatar/"+activeuser);
 
       $.get("/chats", { "username": username.val(), "recipient": activeuser}).done(function( data ) {
               $(".messageul").hide();
@@ -154,6 +154,18 @@ $(function(){
             });
 
     });
+
+    function newMessage(responseType, message) {
+	
+      if($.trim(message) == '') {
+        return false;
+      }
+      var avatar = (responseType==="sent")? username.val():recipient.val();
+      $('<li class="'+responseType+'"><img src="avatar/'+avatar+'" alt="" /><div><p>' + message + '</p></div></li>').appendTo($('.messages ul:visible'));
+      $('.message-input input').val(null);
+      $('.contact.active .preview').html('<span>You: </span>' + message);
+      $(".messages").animate({ scrollTop: $(document).height() }, "fast");
+    };
 
 })
 
@@ -199,16 +211,7 @@ $("#status-options ul li").click(function() {
 	$("#status-options").removeClass("active");
 });
 
-function newMessage(responseType, message) {
-	
-	if($.trim(message) == '') {
-		return false;
-	}
-	$('<li class="'+responseType+'"><img src="img/female_avatar.jpg" alt="" /><div><p>' + message + '</p></div></li>').appendTo($('.messages ul:visible'));
-	$('.message-input input').val(null);
-	$('.contact.active .preview').html('<span>You: </span>' + message);
-	$(".messages").animate({ scrollTop: $(document).height() }, "fast");
-};
+
 
 /*$('.submit').click(function() {
   newMessage();

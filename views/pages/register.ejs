@@ -8,7 +8,7 @@
                     <hr>
                     <div style="margin-top: 20px;"></div>
                     <span class="login-avatar">
-                        <img src="img/default_avatar.png" alt="AVATAR">
+                        <img src="img/default_avatar.png" id="preview" alt="AVATAR">
                     </span>
                     <!--label for="filename">
                        <img src="https://icon-library.net/images/upload-photo-icon/upload-photo-icon-21.jpg"/>
@@ -17,9 +17,9 @@
                  <div class="panel-body">
                     <div class="row">
                        <div class="col-lg-12">   
-                          <form id="login-form"  action="createuser" onsubmit="validate()" method="post" role="form" style="display: block;">
+                          <form id="login-form" enctype="multipart/form-data" action="createuser" onsubmit="validate()" method="post" role="form" style="display: block;">
                               <div class="form-group input-group">
-                                 <input type="file" id="myavatar" name="filename">
+                                 <input type="file" id="myavatar" name="myavatar">
                               </div>
                               <div class="form-group input-group">
                                 <span class="input-group-addon"><i class="fa fa-user"></i></span>
@@ -28,8 +28,8 @@
                              </div>
                              <div class="form-group input-group">
                                  <span class="input-group-addon"><i class="fa fa-user"></i></span>
-                                 <input type="text" name="display" id="display" tabindex="2"  class="form-control" required placeholder=" "> 
-                                 <label class="form-control-placeholder" for="display">Display Name</label>
+                                 <input type="text" name="displayname" id="display" tabindex="2"  class="form-control" required placeholder=" "> 
+                                 <label class="form-control-placeholder" for="displayname">Display Name</label>
                               </div>
                              <div class="form-group input-group">
                                 <span class="input-group-addon"><i class="fa fa-lock"></i></span>
@@ -52,10 +52,4 @@
            </div>
         </div>
      </div>
-<script>
-$( "form" ).on( "submit", function( event ) {
-  event.stopPropagation();
-  //event.preventDefault();
-  $("#login-submit").attr("disabled", true);
-});
-</script>
+     <script src='js/register.js'></script>

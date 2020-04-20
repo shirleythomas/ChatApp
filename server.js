@@ -3,6 +3,8 @@ const bodyParser = require('body-parser');
 const passwordHash = require('password-hash');
 const session = require('express-session');
 const cookieParser = require('cookie-parser');
+const formidable = require('formidable');
+var fs = require('fs');
 
 const app = express()
 const port = 3000
@@ -35,6 +37,10 @@ var openChat = function(req, res){
 
     var options = {method:"find", coll: "users", data:{"username":username}};
     db.execute(options, function(results){
+        if(results.length == 0){
+            res.status(401).json({ error: "Invalid Username/Password" });
+            return;
+        }
         user = results[0];
         if(sess.user || passwordHash.verify(req.body.password, user.password)){
 
@@ -53,6 +59,7 @@ var openChat = function(req, res){
                                             "title":"Simple Chat App",
                                             "username":username,
                                             "display":user.displayname,
+                                            "avatar":user.avatar,
                                             "contacts":contacts,
                                             "chats": chats});
                                             
@@ -65,6 +72,7 @@ var openChat = function(req, res){
                                             "title":"Simple Chat App",
                                             "username":username,
                                             "display":user.displayname,
+                                            "avatar":user.avatar,
                                             "contacts":contacts});
 
 
@@ -72,6 +80,9 @@ var openChat = function(req, res){
                     req.session.save();
                 }
             });
+        } else {
+            // Invalid password
+            res.status(401).json({ error: "Invalid Username/Password" });
         }
     });
 }
@@ -108,13 +119,39 @@ app.get('/register', (req, res) => {
 });
 
 app.post('/createuser', (req, res) => {
-    var hashedPassword = passwordHash.generate(req.body.password);
 
-    var options = {method:"insert", coll: "users", data:{"username":req.body.username,
-                                            "displayname":req.body.display,
-                                            "password":hashedPassword}};
-    db.execute(options);
-    res.redirect("/");
+    var formData = {};
+    var filename = "";
+    var folder = './public/avatar/';
+    new formidable.IncomingForm().parse(req)
+    .on('field', (name, field) => {
+        if(name !== "confirm"){
+            formData[name] = field;
+            console.log('Field', name, field)
+        }
+    })
+    .on('fileBegin', (name, file) => {
+        filename = folder + new Date().getTime().toString()+'_'+file.name
+        file.path = filename
+        //formData["avatar"] = filename;
+
+    })
+    .on('file', (name, file) => {
+        console.log('Uploaded file')
+        // Hash password
+        formData["password"] = passwordHash.generate(formData["password"]);
+
+        fs.rename(filename, folder+formData["username"], function(err) {
+            if ( err ) console.log('ERROR: ' + err);
+        });
+
+        console.log(formData);
+        var options = {method:"insert", coll: "users", data: formData};
+        db.execute(options);
+        res.redirect("/");
+    })
+
+    
 });
 
 app.post('/addcontact', (req, res) => {
@@ -129,7 +166,8 @@ app.post('/addcontact', (req, res) => {
 });
 
 app.get('/contacts', (req, res) => {
-    var options = {method:"find", coll: "contacts", data:{"displayname":new RegExp(req.query.search,"i")}};
+    console.log(req.query.search);
+    var options = {method:"find", coll: "users", data:{"displayname":new RegExp(req.query.search,"i")}};
     db.execute(options, function(contacts){
             res.json(contacts);
     });

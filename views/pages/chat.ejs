@@ -1,7 +1,7 @@
 <div id="sidepanel">
     <div id="profile">
         <div class="wrap">
-            <img id="profile-img" src="img/female_avatar.jpg" class="online" alt="" />
+            <img id="profile-img" src="avatar/<%=username%>" class="online" alt="" />
             <input type="hidden" id="username" value="<%=username%>"/>
             <p><%=display%></p>
             <i class="fa fa-sign-out expand-button" aria-hidden="true"></i>
@@ -33,7 +33,7 @@
                 <li class="contact <% if (i==0){  %> active <% } %>">
                     <div class="wrap">
                         <span class="contact-status away"></span>
-                        <img src="http://emilcarlsson.se/assets/rachelzane.png" alt="" />
+                        <img src="avatar/<%=contacts[i].id%>" alt="" />
                         <div class="meta">
                             <p class="id" style="display:none"><%= contacts[i].id %></p>
                             <p class="name"><%= contacts[i].name %></p>
@@ -53,7 +53,7 @@
 <div class="content">
         <% if (contacts.length > 0) { %>
     <div class="contact-profile">
-        <img src="http://emilcarlsson.se/assets/harveyspecter.png" alt="" />
+        <img src="avatar/<%=contacts[0].id%>" id="recipient_avatar" alt="" />
         <input type="hidden" id="activeuser" value="<%= contacts[0].id %>" />
         <p id="activedisplay"><%= contacts[0].name %></p>
         <div class="social-media">
@@ -66,7 +66,7 @@
         <ul class="messageul" id="<%= contacts[0].id %>">
             <% for(var i=chats.length-1; i > -1; i--) { %>
             <li class="<%= chats[i].type %>">
-                <img src="img/female_avatar.jpg" alt="" />
+                <img src="avatar/<%=(chats[i].type==='sent')?chats[i].sender:chats[i].recipient%>" alt="" />
                 <div>
                     <p class="msg"><%= chats[i].message %></p>
                     <!--p class="time"><%= chats[i].time %></p-->

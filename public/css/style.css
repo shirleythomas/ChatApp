@@ -858,3 +858,13 @@ body {
   height: 100%;
   background: #ffffff7a;
 }
+
+#status{
+  font-size: 0.8em;
+  color: darkred;
+}
+
+#msg{
+  text-align: center;
+  width: 100%;
+}
