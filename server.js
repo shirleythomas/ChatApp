@@ -90,6 +90,8 @@ var openChat = function(req, res){
 
 app.get('/', (req, res) => {
     sess = req.session;
+
+    // If session is set go directly to chat, else open login page.
     if(sess.user) {
         openChat(req,res);
         return;

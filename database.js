@@ -27,7 +27,6 @@ var execute = function(options, callback){
             dbo.collection(options.coll, function (err, collection) {
                 
                 collection.insert(options.data);
-                //collection.insert({ id: 2, firstName: 'Bill', lastName: 'Gates' });
 
                 dbo.collection(options.coll).countDocuments(function (err, count) {
                     if (err) throw err;
@@ -37,7 +36,7 @@ var execute = function(options, callback){
             });
         } else if(options.method === "find") {
 
-            var query = dbo.collection(options.coll).find(options.data);//.sort({"time":-1}).limit(10)
+            var query = dbo.collection(options.coll).find(options.data);
 
             //console.log(query);
 
