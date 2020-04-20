@@ -216,15 +216,10 @@ io.on('connection',(socket)=>{
         
         // Insert into chats
         var options = {method:"insert", coll: "chats",
-                        data:{"sender":data.username, "recipient": data.recipient,
-                            "message":data.message, "type": "sent", "time":data.time}};
-    
-        db.execute(options);
-
-        // Duplicate entry to be seen in the receiver screen.
-        options = {method:"insert", coll: "chats",
-                        data:{"sender":data.recipient, "recipient": data.username,
-                        "message":data.message, "type": "reply", "time":data.time}};
+                        data:[{"sender":data.username, "recipient": data.recipient,
+                            "message":data.message, "type": "sent", "time":data.time},
+                            {"sender":data.recipient, "recipient": data.username,
+                            "message":data.message, "type": "reply", "time":data.time}]};
         /*options.data = {"sender":data.recipient, "recipient": data.username,
                         "message":data.message, "type": "reply", "time":data.time};*/
         db.execute(options);

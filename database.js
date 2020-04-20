@@ -26,7 +26,7 @@ var execute = function(options, callback){
 
             dbo.collection(options.coll, function (err, collection) {
                 
-                collection.insertOne(options.data);
+                collection.insert(options.data);
                 //collection.insert({ id: 2, firstName: 'Bill', lastName: 'Gates' });
 
                 dbo.collection(options.coll).countDocuments(function (err, count) {
