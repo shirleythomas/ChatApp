@@ -30,7 +30,10 @@ $(function(){
         recipient: recipient.val(),
         time: now});
         $("#lastmsgtime").val(now);
-      newMessage("sent", message.val());
+      newMessage("sent", message.val(),recipient.val());
+
+      var contactcard = $("#contacts ul li p.id:contains('"+recipient.val()+"')").closest("li");
+      $( "#contacts ul" ).prepend(contactcard);
     }
 
     send_message_btn.click(function(){
@@ -41,8 +44,10 @@ $(function(){
       console.log(data.recipient);
       console.log(username.val());
         //if(data.recipient === username.val()){
-            newMessage("reply", data.message);
+            newMessage("reply", data.message, data.username);
             $("#lastmsgtime").val(data.time);
+            var contactcard = $("#contacts ul li p.id:contains('"+data.username+"')").closest("li");
+            $( "#contacts ul" ).prepend(contactcard);
         //}
     })
     
@@ -63,9 +68,6 @@ $(function(){
           $( this ).closest( "li" ).hide();
         }
       });
-      /*$(".name:contains('"+search_contact.val()+"')").each(function() {
-        $( this ).closest( "li" ).show();
-      });*/
     })
 
     var contactname = $("#contactname");
@@ -117,11 +119,15 @@ $(function(){
     contact_submit.click(function(){
       var contacthtml = $("#contactlist").html();
       console.log(contacthtml);
-      $.post( "/addcontact", { username: username.val(),
+
+      if($(contacthtml).attr("data-value")){
+        $.post( "/addcontact", { username: username.val(),
                               contactid: $(contacthtml).attr("data-value"),
                               contactname: $(contacthtml).val() }).done(function( data ) {
                                 console.log(data);
                               });
+      }
+
       closeContact();
     })
 
@@ -145,7 +151,7 @@ $(function(){
                 $('<ul class="messageul" id="'+activeuser+'"></ul>').appendTo($(".messages"));
 
                 data.forEach(function(element) {
-                  newMessage(element.type, element.message);
+                  newMessage(element.type, element.message, activeuser);
                 })
               }
               
@@ -155,15 +161,24 @@ $(function(){
 
     });
 
-    function newMessage(responseType, message) {
+    function newMessage(responseType, message, user) {
 	
       if($.trim(message) == '') {
         return false;
       }
       var avatar = (responseType==="sent")? username.val():recipient.val();
-      $('<li class="'+responseType+'"><img src="avatar/'+avatar+'" alt="" /><div><p>' + message + '</p></div></li>').appendTo($('.messages ul:visible'));
+      var messagecard =$('<li class="'+responseType+'"><img src="avatar/'+avatar+'" alt="" /><div><p>' + message + '</p></div></li>');
+      if(responseType==="sent"){
+        messagecard.appendTo($('.messages ul:visible'));
+      }else{
+        console.log(user);
+        messagecard.appendTo($('.messages ul#'+user));
+      }
       $('.message-input input').val(null);
-      $('.contact.active .preview').html('<span>You: </span>' + message);
+      
+      //$('.contact.active .preview').html('<span>You: </span>' + message);
+      var contactcard =$('#contacts ul li p.id:contains("'+user+'")');
+      contactcard.siblings('.preview').html(message);
       $(".messages").animate({ scrollTop: $(document).height() }, "fast");
     };
 
