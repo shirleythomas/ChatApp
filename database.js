@@ -63,6 +63,14 @@ var execute = function(options, callback){
                   });
             
 
+        } else if(options.method === "update") {
+            dbo.collection(options.coll).update(options.query,
+                {$set : options.data},
+                {upsert: options.upsert},
+                function(err, obj) {
+                    if (err) throw err;
+                    console.log("Document updated");
+                });
         } else if(options.method === "delete") {
             dbo.collection(options.coll).deleteOne(options.data, function(err, obj) {
                 if (err) throw err;

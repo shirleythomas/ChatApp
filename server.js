@@ -44,7 +44,8 @@ var openChat = function(req, res){
         user = results[0];
         if(sess.user || passwordHash.verify(req.body.password, user.password)){
 
-            options = {method:"find", coll: "contacts", data:{"username":username}};
+            options = {method:"find", coll: "contacts", data:{"username":username},
+                        sort: "time", order: -1};
             db.execute(options, function(contacts){
                 if(contacts.length>0){
                     options = {method:"find",
@@ -171,8 +172,9 @@ app.post('/addcontact', (req, res) => {
 });
 
 app.get('/contacts', (req, res) => {
-    console.log(req.query.search);
-    var options = {method:"find", coll: "users", data:{"displayname":new RegExp(req.query.search,"i")}};
+    //console.log(req.query.search);
+    var options = {method:"find", coll: "users",
+                    data:{"displayname":new RegExp(req.query.search,"i")}};
     db.execute(options, function(contacts){
             res.json(contacts);
     });
@@ -223,11 +225,22 @@ io.on('connection',(socket)=>{
         /*options.data = {"sender":data.recipient, "recipient": data.username,
                         "message":data.message, "type": "reply", "time":data.time};*/
         db.execute(options);
+
+        options = {method:"update", coll: "contacts", upsert:true,
+                        query:{username:data.username,id:data.recipient, name:data.name},
+                        data:{"message":data.message, "time":data.time}};
+        db.execute(options);
+        options = {method:"update", coll: "contacts", upsert:true,
+                        query:{id:data.username,username:data.recipient, name:data.displayname},
+                        data:{"message":data.message, "time":data.time}};
+        db.execute(options);
     })
 
     // Listen to the typing event
     socket.on('typing', (data) => {
-    	socket.broadcast.emit('typing', {username : data.username, recipient: data.recipient})
+        var filtered = Object.keys(socketids).filter(key => socketids[key] === data.recipient);
+        console.log(filtered);
+    	io.sockets.in(filtered).emit('typing', {username : data.username, recipient: data.recipient})
     })
 
     socket.on('disconnect', (data) => {

@@ -4,6 +4,8 @@ $(function(){
     var username = $("#username")
     var message = $("#message")
     var recipient = $("#activeuser")
+    var recipientname = $("#activedisplay")
+    var displayname = $("#displayname")
 
     // establish connection
     var socket = io.connect("http://localhost:3000/");
@@ -24,16 +26,21 @@ $(function(){
     var search_contact = $("#searchcontact");
 
     var sendmessage = function(){
-      var now = Date.now();
-      socket.emit("new_message",{message: message.val(),
-        username: username.val(),
-        recipient: recipient.val(),
-        time: now});
+      if(message.val().trim()!==""){
+        console.log(recipientname.text());
+        var now = Date.now();
+        socket.emit("new_message",{message: message.val(),
+          username: username.val(),
+          recipient: recipient.val(),
+          displayname: displayname.text(),
+          name: recipientname.text(),
+          time: now});
         $("#lastmsgtime").val(now);
-      newMessage("sent", message.val(),recipient.val());
+        newMessage("sent", message.val(),recipient.val());
 
-      var contactcard = $("#contacts ul li p.id:contains('"+recipient.val()+"')").closest("li");
-      $( "#contacts ul" ).prepend(contactcard);
+        var contactcard = $("#contacts ul li p.id:contains('"+recipient.val()+"')").closest("li");
+        $( "#contacts ul" ).prepend(contactcard);
+      }
     }
 
     send_message_btn.click(function(){
@@ -46,6 +53,7 @@ $(function(){
         //if(data.recipient === username.val()){
             newMessage("reply", data.message, data.username);
             $("#lastmsgtime").val(data.time);
+
             var contactcard = $("#contacts ul li p.id:contains('"+data.username+"')").closest("li");
             $( "#contacts ul" ).prepend(contactcard);
         //}
@@ -90,7 +98,9 @@ $(function(){
 
 
     socket.on("typing", (data) => {
-      if(data.recipient === username.val()){
+      //console.log(data.username)
+      //console.log(recipient.val())
+      if(data.username === recipient.val()){
         feedback.html("<p><i>"+data.username+" is typing a message...</i></p>")
         setTimeout(function(){
           feedback.html("");
@@ -125,6 +135,7 @@ $(function(){
                               contactid: $(contacthtml).attr("data-value"),
                               contactname: $(contacthtml).val() }).done(function( data ) {
                                 console.log(data);
+                                $('#frame').html(data);
                               });
       }
 

@@ -3,7 +3,7 @@
         <div class="wrap">
             <img id="profile-img" src="avatar/<%=username%>" class="online" alt="" />
             <input type="hidden" id="username" value="<%=username%>"/>
-            <p><%=display%></p>
+            <p id="displayname"><%=display%></p>
             <i class="fa fa-sign-out expand-button" aria-hidden="true"></i>
             <!--div id="status-options">
                 <ul>
@@ -37,7 +37,7 @@
                         <div class="meta">
                             <p class="id" style="display:none"><%= contacts[i].id %></p>
                             <p class="name"><%= contacts[i].name %></p>
-                            <p class="preview">I was thinking that we could have chicken tonight, sounds good?</p>
+                            <p class="preview"><%= contacts[i].message %></p>
                         </div>
                     </div>
                 </li>
