@@ -8,7 +8,7 @@ $(function(){
     var displayname = $("#displayname")
 
     // establish connection
-    var socket = io.connect("http://localhost:3000/");
+    var socket = io.connect("ws://localhost:3000/");
 
     socket.on('connect',function(){
       socket.emit("connectioninfo",{user: username.val()});
